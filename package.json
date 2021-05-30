@@ -2,12 +2,14 @@
   "name": "algo-notarizer-verifier-vesemir",
   "license": "AGP3",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel public/index.html ",
+    "start": "cross-env NODE_ENV=development parcel public/index.html --port 3000",
     "build": "cross-env NODE_ENV=production parcel build public/index.html --no-minify --public-url /"
   },
   "dependencies": {
     "autoprefixer": "^7.2.1",
     "babel-preset-react-app": "^3.1.0",
+    "dotenv": "^10.0.0",
+    "hash-wasm": "^4.6.0",
     "parcel-bundler": "latest",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
