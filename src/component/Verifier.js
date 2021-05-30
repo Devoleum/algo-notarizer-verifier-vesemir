@@ -3,11 +3,8 @@ import getData from "../utils/getData";
 import { keccak } from "hash-wasm";
 
 const Verifier = () => {
-  const [url, setUrl] = useState("");
-  const [txId, setTxId] = useState(
-    "7F2DRVZQISPF6ZC33UDORFLGW7SBU2SIF2YGBDU5SEYGR4UPNA3A"
-  );
-  const [hash, setHash] = useState("");
+  const [step, setStep] = useState(null);
+  const [algoHash, setAlgoHash] = useState(null);
   const [itemId, setItemId] = useState("5ffb9399b44b660004ba402c");
 
   // https://algoexplorerapi.io/idx2/v2/transactions?txid={txid}
@@ -22,44 +19,62 @@ const Verifier = () => {
   // };
 
   const getDevoleumStep = async () => {
-    const data = await getData(
+    let step = await getData(
       `${process.env.API_BASE_URL}/api/steps/${itemId}`
     );
-    console.log(data);
     const jsonContent = await getData(step.uri);
-    console.log("json: ", jsonContent);
+    step.jsonHash = await calcHash(
+      JSON.stringify(jsonContent),
+      step.randomizeProof
+    );
+    setStep(step);
+    await getAlgoNote(step.test_algo_notarization);
   };
 
-  const getAlgoNote = async () => {
+  const calcHash = async (content, random) => {
+    const hash = await keccak(content + random, 256);
+    return hash;
+  };
+
+  const getAlgoNote = async (url) => {
+    const baseUrl = 'https://testnet.algoexplorer.io/tx/';
+    const txId = url.substring(baseUrl.length);
+    console.log(url)
     let data = await getData(
       "https://new.testnet.algoexplorerapi.io/v2/transactions/" + txId
     );
     data = JSON.parse(atob(data.transaction.note));
-    setHash(data.hash);
-    setItemId(data.id);
+    setAlgoHash(data.hash);
   };
 
   return (
     <div>
-      <span>Please insert the Step ID</span>
+      <div>
+        <span>Please insert the Step ID</span>
+      </div>
       <input
         className="input"
         type="text"
         placeholder="id"
-        onChange={e => setItemId(e.target.value)}
+        onChange={(e) => setItemId(e.target.value)}
         value={itemId}
       />
-      <button className="button" onClick={() => getDevoleumStep()}>
-        Verify Step
-      </button>
+      <div>
+        <button className="button" onClick={() => getDevoleumStep()}>
+          Verify Step
+        </button>
+      </div>
       <br />
       <br />
-      {hash && (
+      {step && (
         <div>
-          <span>id: {itemId}</span>
-          <br />
-          <br />
-          <span>hash: {hash}</span>
+          <div className="tab-with-corner">Devoleum Step</div>
+          <div className="boxed">
+            <div><span className="label">Step ID: </span>{step._id}</div>
+            <div><span className="label">Step Name: </span>{step.name}</div>
+            <div><span className="label">JSON hash: </span>{step.jsonHash}</div>
+            <div><span className="label">Algorand hash: </span>{algoHash}</div>
+          </div>
         </div>
       )}
     </div>
