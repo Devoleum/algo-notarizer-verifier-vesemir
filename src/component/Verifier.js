@@ -19,9 +19,7 @@ const Verifier = () => {
   // };
 
   const getDevoleumStep = async () => {
-    let step = await getData(
-      `${process.env.API_BASE_URL}/api/steps/${itemId}`
-    );
+    let step = await getData(`${process.env.API_BASE_URL}/api/steps/${itemId}`);
     const jsonContent = await getData(step.uri);
     step.jsonHash = await calcHash(
       JSON.stringify(jsonContent),
@@ -37,9 +35,9 @@ const Verifier = () => {
   };
 
   const getAlgoNote = async (url) => {
-    const baseUrl = 'https://testnet.algoexplorer.io/tx/';
+    const baseUrl = "https://testnet.algoexplorer.io/tx/";
     const txId = url.substring(baseUrl.length);
-    console.log(url)
+    console.log(url);
     let data = await getData(
       "https://new.testnet.algoexplorerapi.io/v2/transactions/" + txId
     );
@@ -50,7 +48,7 @@ const Verifier = () => {
   return (
     <div>
       <div>
-        <span>Please insert the Step ID</span>
+        <span className="label">Please insert the Step ID</span>
       </div>
       <input
         className="input"
@@ -66,14 +64,33 @@ const Verifier = () => {
       </div>
       <br />
       <br />
-      {step && (
+      {algoHash && (
         <div>
-          <div className="tab-with-corner">Devoleum Step</div>
+          <div className="tab-with-corner">
+            Devoleum Step{" - "}
+            {algoHash === step.jsonHash ? (
+              <span style={{ color: " #44f1a6" }}>Matching</span>
+            ) : (
+              <span style={{ color: "red" }}>Not Matching</span>
+            )}
+          </div>
           <div className="boxed">
-            <div><span className="label">Step ID: </span>{step._id}</div>
-            <div><span className="label">Step Name: </span>{step.name}</div>
-            <div><span className="label">JSON hash: </span>{step.jsonHash}</div>
-            <div><span className="label">Algorand hash: </span>{algoHash}</div>
+            <div>
+              <span className="label">Step ID: </span>
+              {step._id}
+            </div>
+            <div>
+              <span className="label">Step Name: </span>
+              {step.name}
+            </div>
+            <div>
+              <span className="label">JSON hash: </span>
+              {step.jsonHash}
+            </div>
+            <div>
+              <span className="label">Algorand hash: </span>
+              {algoHash}
+            </div>
           </div>
         </div>
       )}

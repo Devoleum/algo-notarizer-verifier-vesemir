@@ -16,6 +16,31 @@ body {
   color: #eee;
 }
 
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+
+/* For devices larger than 400px */
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0;
+  }
+}
+
+/* For devices larger than 550px */
+@media (min-width: 550px) {
+  .container {
+    width: 80%;
+  }
+}
+
 .App {
   padding: 15px;
 }
@@ -28,6 +53,7 @@ body {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
+  padding-top: 50px;
   word-break: break-word;
   font-size: 1.875rem;
   font-weight: 700;
@@ -164,6 +190,6 @@ span {
   word-break: break-all;
 }
 
-.boxed div{
+.boxed div {
   margin-bottom: 10px;
 }
