@@ -5,21 +5,19 @@ import { keccak } from "hash-wasm";
 const Verifier = () => {
   const [step, setStep] = useState(null);
   const [algoHash, setAlgoHash] = useState(null);
+  const [error, setError] = useState(null);
   const [itemId, setItemId] = useState("5ffb9399b44b660004ba402c");
 
-  // https://algoexplorerapi.io/idx2/v2/transactions?txid={txid}
-  // const connectAlgo = () => {
-  //   AlgoSigner.connect()
-  //     .then((d) => {
-  //       console.log("connected: ", d);
-  //     })
-  //     .catch((e) => {
-  //       console.error(e);
-  //     });
-  // };
-
   const getDevoleumStep = async () => {
+    setError(null);
+    setStep(null);
+    setAlgoHash(null);
+
     let step = await getData(`${process.env.API_BASE_URL}/api/steps/${itemId}`);
+    if (!step.uri || !step.test_algo_notarization) {
+      setError("Something went wrong! Try another ID.");
+      return;
+    }
     const jsonContent = await getData(step.uri);
     step.jsonHash = await calcHash(
       JSON.stringify(jsonContent),
@@ -62,6 +60,7 @@ const Verifier = () => {
           Verify Step
         </button>
       </div>
+      <span>{error}</span>
       <br />
       <br />
       {algoHash && (
@@ -80,8 +79,14 @@ const Verifier = () => {
               {step._id}
             </div>
             <div>
-              <span className="label">Step Name: </span>
-              {step.name}
+              <span className="label">Step name: </span>
+              <a
+                href={"https://app.devoleum.com/step/" + step._id}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {step.name}
+              </a>
             </div>
             <div>
               <span className="label">JSON hash: </span>
@@ -90,6 +95,22 @@ const Verifier = () => {
             <div>
               <span className="label">Algorand hash: </span>
               {algoHash}
+            </div>
+            <div>
+              <span className="label">Algorand tx: </span>
+              <a
+                href={step.test_algo_notarization}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {step.test_algo_notarization}
+              </a>
+            </div>
+            <div>
+              <span className="label">JSON link: </span>
+              <a href={step.uri} target="_blank" rel="noopener noreferrer">
+                {step.uri}
+              </a>
             </div>
           </div>
         </div>

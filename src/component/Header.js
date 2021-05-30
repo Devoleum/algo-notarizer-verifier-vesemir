@@ -14,13 +14,9 @@ const Header = () => (
       >
         open source
       </a>{" "}
-      web app that organizes linked open data from physical or digital supply chains into
-      authentic stories. Thanks to Devoleum it is possible to notarize the steps
-      of a supply chain in an immutable way on blockchains and other distributed
-      systems, using cryptographic hashes that allow data verification and a
-      high degree of privacy. Each story shows in a clear and detailed way the
-      steps that contributed to making the product unique and precious. Here you
-      can verify the stories showed on our platform.
+      web app that organizes linked open data from physical or digital supply
+      chains into authentic stories notarized on various blockchains. Here you can verify the stories showed on
+      our platform notarized on Algorand.
     </div>
     <br />
   </div>

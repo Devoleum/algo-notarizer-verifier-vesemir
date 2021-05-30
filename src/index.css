@@ -85,8 +85,8 @@ body {
 }
 
 .button:hover {
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  background-color: #44f1a6;
+  color: #182922;
 }
 
 .input {
@@ -138,7 +138,7 @@ span {
 .tab-with-corner::before {
   position: absolute;
   border: 1px solid #393939;
-  border-bottom-width: 1px;
+  border-bottom-width: 0px;
   border-top-width: 1px;
   border-left-width: 0px;
   transform-origin: bottom left;
@@ -192,4 +192,26 @@ span {
 
 .boxed div {
   margin-bottom: 10px;
+}
+
+
+/* LINKS
+/* unvisited link */
+a:link {
+  color: #44f1a6;
+}
+
+/* visited link */
+a:visited {
+  color: #44f1a6;
+}
+
+/* mouse over link */
+a:hover {
+  color: lightgreen;
+}
+
+/* selected link */
+a:active {
+  color: blue;
 }
