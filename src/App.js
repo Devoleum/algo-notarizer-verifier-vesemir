@@ -13,7 +13,7 @@ const App = () => (
     <h1 className="title">Devoleum - Algorand Verifier</h1>
     <Router>
       <nav>
-        <Link to="/verifier">Verifier</Link> |{" "}
+        <Link to="/">Verifier</Link> |{" "}
         <Link to="/notarizer">Notarizer</Link>
       </nav>
       <Header />
