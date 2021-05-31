@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import getData from "../utils/getData";
 import { keccak } from "hash-wasm";
+import {
+  useParams
+} from "react-router-dom";
 
 const Verifier = () => {
+  let { id = null} = useParams();
   const [step, setStep] = useState(null);
   const [algoHash, setAlgoHash] = useState(null);
   const [error, setError] = useState(null);
-  const [itemId, setItemId] = useState("5ffb9399b44b660004ba402c");
+  const [itemId, setItemId] = useState(id);
 
   const getDevoleumStep = async () => {
     setError(null);
@@ -51,7 +55,6 @@ const Verifier = () => {
       <input
         className="input"
         type="text"
-        placeholder="id"
         onChange={(e) => setItemId(e.target.value)}
         value={itemId}
       />
