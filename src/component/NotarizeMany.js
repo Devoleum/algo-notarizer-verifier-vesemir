@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { keccak } from "hash-wasm";
 
-const NotarizeMany = (props) => {
+const NotarizeMany = ({ account }) => {
   const [steps, setSteps] = useState(null);
   const [stepsCounter, setStepsCounter] = useState(null);
   const [txMessage, setTxMessage] = useState(null);
@@ -46,12 +46,41 @@ const NotarizeMany = (props) => {
 
   const notarizeProof = async (calcHash, stepId) => {
     console.log("get hash: ", calcHash, "get id: ", stepId);
-        await notarizeMongo(txurl, calcHash, stepId);
+
+    const txParams = await AlgoSigner.algod({
+      ledger: "TestNet",
+      path: "/v2/transactions/params",
+    });
+
+    const signedTx = await AlgoSigner.sign({
+      from: account,
+      assetTotal: 1,
+      assetDecimals: 0,
+      note: JSON.stringify({ hash: calcHash, id: stepId }),
+      type: "acfg",
+      fee: txParams["min-fee"],
+      firstRound: txParams["last-round"],
+      lastRound: txParams["last-round"] + 1000,
+      genesisID: txParams["genesis-id"],
+      genesisHash: txParams["genesis-hash"],
+      flatFee: true,
+    });
+
+    const txRes = await AlgoSigner.send({
+      ledger: "TestNet",
+      tx: signedTx.blob,
+    });
+
+    await notarizeMongo(
+      "https://testnet.algoexplorer.io/tx/" + txRes.txId,
+      calcHash,
+      stepId
+    );
   };
 
   const notarizeMongo = async (txurl, calchash, stepId) => {
     const response = await fetch(
-      `${process.env.API_BASE_URL}/api/steps/rinkeby/${stepId}`,
+      `${process.env.API_BASE_URL}/api/steps/algorand/testnet/${stepId}`,
       {
         method: "PUT",
         headers: {
@@ -63,12 +92,14 @@ const NotarizeMany = (props) => {
         body: JSON.stringify({ txurl: txurl, calchash: calchash }),
       }
     );
-    console.log("get notarizeMongo response: ", response);
+
+    const jsonRes = await response.json();
+    console.log("get notarizeMongo response: ", jsonRes);
   };
 
   return (
     <div className="row">
-      <div className="six columns">
+      <div>
         <h4>1. Get Steps</h4>
         <p>Here the admin can notarize multiple proofs</p>
         <div>
@@ -78,15 +109,12 @@ const NotarizeMany = (props) => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="row">
-            <div className="six columns">
-              <label htmlFor="historyId">History id</label>
-              <input
-                className="input"
-                type="text"
-                placeholder=""
-                id="historyId"
-              />
-            </div>
+            <input
+              className="input"
+              type="text"
+              placeholder="History id"
+              id="historyId"
+            />
           </div>
           <input
             className="button"
@@ -103,7 +131,7 @@ const NotarizeMany = (props) => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>^</th>
+                <th>Notarize</th>
               </tr>
             </thead>
             <tbody>
@@ -111,21 +139,22 @@ const NotarizeMany = (props) => {
                 <tr>
                   <td>
                     {step.name}
-                    <div style="word-break: break-all">{step.calcHash}</div>
+                    <div style={{ wordBreak: "break-all" }}>
+                      {step.calcHash}
+                    </div>
                   </td>
-                  <td
-                    style={{
-                      display: step.test_algo_notarization ? "none" : null,
-                    }}
-                  >
-                    <input
-                      className="button"
-                      style="background-color: darkred; border-color: darkred;"
-                      type="button"
-                      id="btnnotarize"
-                      value="GO"
-                      onClick={() => notarizeProof(step.calcHash, step._id)}
-                    />
+                  <td align="center">
+                    {step.test_algo_notarization ? (
+                      <div align="center">Done</div>
+                    ) : (
+                      <input
+                        className="button"
+                        type="button"
+                        id="btnnotarize"
+                        value="GO"
+                        onClick={() => notarizeProof(step.calcHash, step._id)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
