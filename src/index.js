@@ -1,40 +1,10 @@
-import "regenerator-runtime/runtime";
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
 
-import Header from "./component/Header";
-import Verifier from "./component/Verifier";
-import Notarizer from "./component/Notarizer";
-import "./index.css";
+ReactDOM.render(<App />, document.getElementById('root'));
 
-const App = () => (
-  <div className="container">
-    <h1 className="title">Devoleum - Algorand Verifier</h1>
-    <nav>
-      <Link to="/">Verifier</Link> | <Link to="/notarizer">Notarizer</Link>
-    </nav>
-
-    <Header />
-    <Switch>
-      <Route path="/notarizer">
-        <Notarizer />
-      </Route>
-      <Route path="/:id?">
-        <Verifier />
-      </Route>
-    </Switch>
-  </div>
-);
-
-ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
-  document.getElementById("root")
-);
-
-// Hot Module Replacement
-if (module.hot) {
-  module.hot.accept();
-}
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA

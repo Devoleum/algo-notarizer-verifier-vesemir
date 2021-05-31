@@ -3,7 +3,7 @@
   "license": "AGP3",
   "scripts": {
     "start": "cross-env NODE_ENV=development parcel public/index.html --port 3000",
-    "build": "cross-env NODE_ENV=production parcel build public/index.html --no-minify --public-url /"
+    "build": "cross-env NODE_ENV=production parcel build public/index.html --no-minify && mv public/_redirects dist"
   },
   "dependencies": {
     "autoprefixer": "^7.2.1",
