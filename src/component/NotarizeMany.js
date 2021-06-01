@@ -20,10 +20,12 @@ const NotarizeMany = ({ account }) => {
 
   const populateStep = async (step) => {
     const jsonContent = await getData(step.uri);
-    step.calcHash = await calcHash(
-      JSON.stringify(jsonContent),
-      step.randomizeProof
-    );
+    if (!step.test_algo_notarization) {
+      step.calcHash = await calcHash(
+        JSON.stringify(jsonContent),
+        step.randomizeProof
+      );
+    }
   };
 
   const getData = async (url) => {
@@ -44,7 +46,7 @@ const NotarizeMany = ({ account }) => {
     return hash;
   };
 
-  const notarizeProof = async (calcHash, stepId) => {
+  const notarizeProof = async (calcHash, stepId, idx) => {
     console.log("get hash: ", calcHash, "get id: ", stepId);
 
     const txParams = await AlgoSigner.algod({
@@ -71,11 +73,15 @@ const NotarizeMany = ({ account }) => {
       tx: signedTx.blob,
     });
 
-    await notarizeMongo(
+    const jsonRes = await notarizeMongo(
       "https://testnet.algoexplorer.io/tx/" + txRes.txId,
       calcHash,
       stepId
     );
+
+    let updatedSteps = [...steps];
+    updatedSteps[idx] = jsonRes;
+    setSteps(updatedSteps);
   };
 
   const notarizeMongo = async (txurl, calchash, stepId) => {
@@ -95,6 +101,8 @@ const NotarizeMany = ({ account }) => {
 
     const jsonRes = await response.json();
     console.log("get notarizeMongo response: ", jsonRes);
+
+    return jsonRes;
   };
 
   return (
@@ -135,13 +143,15 @@ const NotarizeMany = ({ account }) => {
               </tr>
             </thead>
             <tbody>
-              {steps.map((step) => (
-                <tr>
+              {steps.map((step, idx) => (
+                <tr key={step._id}>
                   <td>
                     {step.name}
-                    <div style={{ wordBreak: "break-all" }}>
-                      {step.calcHash}
-                    </div>
+                    {!step.test_algo_notarization && (
+                      <div style={{ wordBreak: "break-all" }}>
+                        {step.calcHash}
+                      </div>
+                    )}
                   </td>
                   <td align="center">
                     {step.test_algo_notarization ? (
@@ -152,7 +162,9 @@ const NotarizeMany = ({ account }) => {
                         type="button"
                         id="btnnotarize"
                         value="GO"
-                        onClick={() => notarizeProof(step.calcHash, step._id)}
+                        onClick={() =>
+                          notarizeProof(step.calcHash, step._id, idx)
+                        }
                       />
                     )}
                   </td>
