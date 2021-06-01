@@ -19,6 +19,14 @@ const Header = () => (
       our platform notarized on Algorand.
     </div>
     <br />
+    <div>
+      Donate to
+      <br />
+      ETH: 0x0F4cC51fd25E7E9954BBcc33efCB2A36B7Ab8904
+      <br />
+      ALGO: 5N22O3PIXAGNAGHBFSU6HQ22KGI4D3XEBACEFODVH3UOKCA4C2IBRD4ZDE
+    </div>
+    <br />
   </div>
 );
 
