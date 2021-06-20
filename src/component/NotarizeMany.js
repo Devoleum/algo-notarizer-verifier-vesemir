@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { keccak } from "hash-wasm";
 
-const NotarizeMany = ({ account }) => {
+const NotarizeMany = ({ account, net, netKey }) => {
   const [steps, setSteps] = useState(null);
   const [stepsCounter, setStepsCounter] = useState(null);
   const [txMessage, setTxMessage] = useState(null);
@@ -50,7 +50,7 @@ const NotarizeMany = ({ account }) => {
     console.log("get hash: ", calcHash, "get id: ", stepId);
 
     const txParams = await AlgoSigner.algod({
-      ledger: "TestNet",
+      ledger: net,
       path: "/v2/transactions/params",
     });
 
@@ -69,12 +69,15 @@ const NotarizeMany = ({ account }) => {
     });
 
     const txRes = await AlgoSigner.send({
-      ledger: "TestNet",
+      ledger: net,
       tx: signedTx.blob,
     });
 
+    //https://algoexplorer.io/tx/
+    //https://testnet.algoexplorer.io/tx/
+
     const jsonRes = await notarizeMongo(
-      "https://testnet.algoexplorer.io/tx/" + txRes.txId,
+      (net === 'MainNet' ? 'https://algoexplorer.io/tx/' : 'https://testnet.algoexplorer.io/tx/') + txRes.txId,
       calcHash,
       stepId
     );
@@ -86,7 +89,7 @@ const NotarizeMany = ({ account }) => {
 
   const notarizeMongo = async (txurl, calchash, stepId) => {
     const response = await fetch(
-      `${process.env.API_BASE_URL}/api/steps/algorand/testnet/${stepId}`,
+      `${process.env.API_BASE_URL}/api/steps/algorand/${net.toLowerCase()}/${stepId}`,
       {
         method: "PUT",
         headers: {
@@ -108,7 +111,7 @@ const NotarizeMany = ({ account }) => {
   return (
     <div className="row">
       <div>
-        <h4>1. Get Steps</h4>
+        <h4 style={{color: (net === 'MainNet' ? 'green' : 'white') }}>1. Get Steps - {net}</h4>
         <p>Here the admin can notarize multiple proofs</p>
         <div>
           <a href={txMessage} target="_blank">
@@ -154,7 +157,7 @@ const NotarizeMany = ({ account }) => {
                     )}
                   </td>
                   <td align="center">
-                    {step.test_algo_notarization ? (
+                    {step[netKey] ? (
                       <div align="center">Done</div>
                     ) : (
                       <input
