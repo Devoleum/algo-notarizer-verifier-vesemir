@@ -7,10 +7,12 @@ import {
 
 const Verifier = () => {
   let { id = null} = useParams();
+  let { netparam= null} = useParams();
   const [step, setStep] = useState(null);
   const [algoHash, setAlgoHash] = useState(null);
   const [error, setError] = useState(null);
   const [itemId, setItemId] = useState(id);
+  const [net, setNet] = useState(netparam);
 
   const getDevoleumStep = async () => {
     setError(null);
@@ -18,7 +20,7 @@ const Verifier = () => {
     setAlgoHash(null);
 
     let step = await getData(`${process.env.API_BASE_URL}/api/steps/${itemId}`);
-    if (!step.uri || !step.test_algo_notarization) {
+    if (!step.uri || !step.test_algo_notarization || !step.main_algo_notarization) {
       setError("Something went wrong! Try another ID.");
       return;
     }
@@ -28,7 +30,7 @@ const Verifier = () => {
       step.randomizeProof
     );
     setStep(step);
-    await getAlgoNote(step.test_algo_notarization);
+    await getAlgoNote(net === 'main' ? step.main_algo_notarization : step.test_algo_notarization);
   };
 
   const calcHash = async (content, random) => {
@@ -37,11 +39,11 @@ const Verifier = () => {
   };
 
   const getAlgoNote = async (url) => {
-    const baseUrl = "https://testnet.algoexplorer.io/tx/";
+    const baseUrl =(net === 'main' ? "https://algoexplorer.io/tx/" : "https://testnet.algoexplorer.io/tx/");
     const txId = url.substring(baseUrl.length);
     console.log(url);
     let data = await getData(
-      "https://new.testnet.algoexplorerapi.io/v2/transactions/" + txId
+      `https://new.${net}net.algoexplorerapi.io/v2/transactions/${txId}`
     );
     data = JSON.parse(atob(data.transaction.note));
     setAlgoHash(data.hash);
@@ -50,7 +52,7 @@ const Verifier = () => {
   return (
     <div>
       <div>
-        <span className="label">Please insert the Step ID</span>
+        <span className="label">Please insert the Step ID - {net !== null ? net.toUpperCase() : 'TEST'} NET </span>
       </div>
       <input
         className="input"

@@ -21,7 +21,7 @@ const App = () => (
         <Route path="/notarizer">
           <Notarizer />
         </Route>
-        <Route path="/:id?">
+        <Route path="/:netparam?/:id?">
           <Verifier />
         </Route>
         <Route>
