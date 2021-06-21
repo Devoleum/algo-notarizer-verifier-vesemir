@@ -58,7 +58,7 @@ const Verifier = () => {
   return (
     <div>
       <div>
-        <div className="label">Please insert the Step ID - {net !== null ? net.toUpperCase() : 'TEST'} NET </div>
+        <div className="label">Please insert the Step ID</div>
       </div>
       <div>
       <form style={{display: 'flex', margin: '15px 0 15px'}}>
