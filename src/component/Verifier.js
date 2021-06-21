@@ -7,7 +7,7 @@ import {
 
 const Verifier = () => {
   let { id = null} = useParams();
-  let { netparam= null} = useParams();
+  let { netparam = 'test'} = useParams();
   const [step, setStep] = useState(null);
   const [algoHash, setAlgoHash] = useState(null);
   const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const Verifier = () => {
     setAlgoHash(null);
 
     let step = await getData(`${process.env.API_BASE_URL}/api/steps/${itemId}`);
-    if (!step.uri || !step.test_algo_notarization || !step.main_algo_notarization) {
+    if (!step.uri || (!step.test_algo_notarization && net === 'test') || !step.main_algo_notarization && net === 'main') {
       setError("Something went wrong! Try another ID.");
       return;
     }
@@ -49,10 +49,44 @@ const Verifier = () => {
     setAlgoHash(data.hash);
   };
 
+  const handleOptionChange = async (changeEvent) => {
+    const val = changeEvent.target.value;
+    setNet(val);
+  };
+
+
   return (
     <div>
       <div>
-        <span className="label">Please insert the Step ID - {net !== null ? net.toUpperCase() : 'TEST'} NET </span>
+        <div className="label">Please insert the Step ID - {net !== null ? net.toUpperCase() : 'TEST'} NET </div>
+      </div>
+      <div>
+      <form style={{display: 'flex', margin: '15px 0 15px'}}>
+            <div className="radio">
+              <label>
+                <input
+                  name="net-type"
+                  type="radio"
+                  value="test"
+                  checked={net === "test"}
+                  onChange={handleOptionChange}
+                />
+                TestNet
+              </label>
+            </div>
+            <div className="radio">
+              <label>
+                <input
+                  name="net-type"
+                  type="radio"
+                  value="main"
+                  checked={net === "main"}
+                  onChange={handleOptionChange}
+                />
+                MainNet
+              </label>
+            </div>
+          </form>
       </div>
       <input
         className="input"

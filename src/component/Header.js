@@ -19,7 +19,7 @@ const Header = () => (
       our platform notarized on Algorand.
     </div>
     <br />
-    <div>
+    <div style={{wordBreak: 'break-all'}}>
       Donate to
       <br />
       ETH: 0x0F4cC51fd25E7E9954BBcc33efCB2A36B7Ab8904
