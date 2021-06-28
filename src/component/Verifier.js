@@ -42,8 +42,9 @@ const Verifier = () => {
     const baseUrl =(net === 'main' ? "https://algoexplorer.io/tx/" : "https://testnet.algoexplorer.io/tx/");
     const txId = url.substring(baseUrl.length);
     console.log(url);
+    const algoExpUrl = (net === 'main' ? `https://new.algoexplorerapi.io/v2/transactions/${txId}` : `https://new.${net}net.algoexplorerapi.io/v2/transactions/${txId}`);
     let data = await getData(
-      `https://new.${net}net.algoexplorerapi.io/v2/transactions/${txId}`
+      algoExpUrl
     );
     data = JSON.parse(atob(data.transaction.note));
     setAlgoHash(data.hash);
@@ -138,11 +139,11 @@ const Verifier = () => {
             <div>
               <span className="label">Algorand tx: </span>
               <a
-                href={step.test_algo_notarization}
+                href={net === 'main' ? step.main_algo_notarization : step.test_algo_notarization}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {step.test_algo_notarization}
+                {net === 'main' ? step.main_algo_notarization : step.test_algo_notarization}
               </a>
             </div>
             <div>

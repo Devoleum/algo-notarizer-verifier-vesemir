@@ -20,7 +20,8 @@ const NotarizeMany = ({ account, net, netKey }) => {
 
   const populateStep = async (step) => {
     const jsonContent = await getData(step.uri);
-    if (!step.test_algo_notarization) {
+    const jsonKey = (net === 'MainNet' ? 'main_algo_notarization' : 'test_algo_notarization')
+    if (!step[jsonKey]) {
       step.calcHash = await calcHash(
         JSON.stringify(jsonContent),
         step.randomizeProof

@@ -17,7 +17,7 @@ const Notarizer = () => {
       .then((d) => {
         setConnectStatus("success");
         AlgoSigner.accounts({
-          ledger: "TestNet",
+          ledger: net,
         })
           .then((accounts) => {
             setAccount(accounts[0].address);
