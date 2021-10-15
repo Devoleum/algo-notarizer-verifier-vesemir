@@ -138,7 +138,8 @@ const NotarizeMany = ({ account, net, netKey }) => {
       </div>
       {steps && (
         <div className="twelve columns" id="stepContainer">
-          <h4>2. Notarize {stepsCounter}</h4>
+          <h4>2. Notarize {steps.length * 0.0007 + 'eur'}</h4>
+          <div>{}</div>
           <table className="u-full-width" id="stepTable">
             <thead>
               <tr>
@@ -150,7 +151,7 @@ const NotarizeMany = ({ account, net, netKey }) => {
               {steps.map((step, idx) => (
                 <tr key={step._id}>
                   <td>
-                    {step.name}
+                    {idx + 1 +'. '}{step.name}
                     {!step.test_algo_notarization && (
                       <div style={{ wordBreak: "break-all" }}>
                         {step.calcHash}

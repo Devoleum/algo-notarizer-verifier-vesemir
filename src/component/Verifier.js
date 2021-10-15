@@ -42,7 +42,7 @@ const Verifier = () => {
     const baseUrl =(net === 'main' ? "https://algoexplorer.io/tx/" : "https://testnet.algoexplorer.io/tx/");
     const txId = url.substring(baseUrl.length);
     console.log(url);
-    const algoExpUrl = (net === 'main' ? `https://new.algoexplorerapi.io/v2/transactions/${txId}` : `https://new.${net}net.algoexplorerapi.io/v2/transactions/${txId}`);
+    const algoExpUrl = (net === 'main' ? `https://indexer.algoexplorerapi.io/v2/transactions/${txId}` : `https://new.${net}net.algoexplorerapi.io/v2/transactions/${txId}`);
     let data = await getData(
       algoExpUrl
     );
